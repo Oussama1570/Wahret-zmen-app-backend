@@ -34,8 +34,8 @@ router.get("/", async (req, res) => {
       { $sort: { _id: 1 } }
     ]);
 
-    // ✅ Get users from Firebase (limit: 1000)
-    const firebaseUsers = await firebaseAdmin.auth().listUsers(1000);
+    // ✅ Get users from Firebase (limit: 10000)
+    const firebaseUsers = await firebaseAdmin.auth().listUsers(10000);
     const totalUsersFirebase = firebaseUsers.users.length;
 
     const totalUsers = totalUsersMongo + totalUsersFirebase;
