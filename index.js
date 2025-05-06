@@ -7,16 +7,15 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// ✅ Include the correct frontend domain(s) here
+// ✅ Allowed frontend origins
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",")
   : [
-    "http://localhost:5173",
-    "https://wahret-zmen-app-frontend-rouge.vercel.app",
-      
+      "http://localhost:5173",
+      "https://wahret-zmen-app-frontend-rouge.vercel.app",
     ];
 
-// ✅ CORS setup
+// ✅ CORS setup (allow local + deployed frontend)
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -30,10 +29,14 @@ app.use(
   })
 );
 
-app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// ✅ Fix 413 Payload Too Large
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-// ✅ Routes
+// ✅ Serve uploaded files
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// ✅ API Routes
 app.use("/api/products", require("./src/products/product.route"));
 app.use("/api/orders", require("./src/orders/order.route"));
 app.use("/api/auth", require("./src/users/user.route"));
@@ -51,7 +54,7 @@ const connectDB = async () => {
     console.log("✅ MongoDB connected successfully");
   } catch (error) {
     console.error("❌ MongoDB connection error:", error);
-    setTimeout(connectDB, 5000);
+    setTimeout(connectDB, 5000); // retry on failure
   }
 };
 
@@ -62,6 +65,7 @@ app.get("/", (req, res) => {
   res.send("Wahret Zmen Boutique Server is running!");
 });
 
+// ✅ Start server
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
 });
