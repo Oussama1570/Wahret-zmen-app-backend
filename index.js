@@ -12,7 +12,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",")
   : [
       
-      "https://wahret-zmen-app-frontend-eta.vercel.app",
+      "https://wahret-zmen-app-frontend-three.vercel.app",
     ];
 
 // ✅ CORS setup (allow local + deployed frontend)
